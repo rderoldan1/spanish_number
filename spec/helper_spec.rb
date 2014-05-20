@@ -5,7 +5,7 @@ require 'array'
 describe 'Helper methods' do
 	TEST.each do |number|
 		it "should translate a number = #{number}" do
-			number[0].to_spanish_text.should eq number[1]
+			number[0].to_spanish_text(format: :short).strip.should eq number[1]
 		end
 	end
 end

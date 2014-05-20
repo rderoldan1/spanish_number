@@ -11,7 +11,8 @@ class Numeric
 	rails_locale =  defined?(Rails)? "#{Rails.root}/config/locales/**/*.yml" : ''
 	I18n.load_path = Dir[File.join(File.dirname(__FILE__),'locales/**/*.yml'), rails_locale]
 
-  def to_spanish_text(options = {currency: :default})
+  def to_spanish_text(options = {})
+		options = {currency: :default, format: :long}.merge!(options)
     final_text = ""
     sprintf( "%.2f", self ) =~ /([^\.]*)(\..*)?/
     int, dec = $1.reverse, $2 ? $2[1..-1].reverse : ""
@@ -29,7 +30,7 @@ class Numeric
     #final_text += mxn dec if currency == 'mxn'
     #final_text[1..-1]
     dec = dec.eql?("") ? "cero" : cents([dec])
-		translate_currency(final_text, dec, options[:currency] )
+		translate_currency(final_text, dec, options[:currency], options[:format] )
   end
 
   private
@@ -78,10 +79,10 @@ class Numeric
 	end
 
 
-  def translate_currency(integer, decimal, currency)
+  def translate_currency(integer, decimal, currency, format)
 		  integer_label =  I18n.t(:integer_label, :scope => "currencies.#{currency}", :default => "")
 		  decimal_label =  I18n.t(:decimal_label, :scope => "currencies.#{currency}", :default => "")
-		  I18n.t(:format, :scope => "currencies.#{currency}", :decimal => decimal,
+		  I18n.t(format, :scope => "currencies.#{currency}.format", :decimal => decimal,
 		         :decimal_label => decimal_label, :integer => integer, :integer_label => integer_label)
 	  #end
   end

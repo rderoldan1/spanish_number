@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    spanish_number (1.0.6)
+    spanish_number (1.0.7)
       i18n
 
 GEM

@@ -1,12 +1,18 @@
 es:
   currencies:
-      cop:
-       format: ! '%{integer} %{integer_label} con%{decimal} %{decimal_label}'
-       integer_label: "pesos"
-       decimal_label: 'centavos'
-      default:
-       format: ! '%{integer} con %{decimal}'
-      usd:
-       format: ! '%{integer} %{integer_label} con%{decimal} %{decimal_label}'
-       integer_label: "dolares"
-       decimal_label: 'centavos de dolar'
+    cop:
+      format:
+        short: ! '%{integer} %{integer_label}'
+        long:  ! '%{integer} %{integer_label} con%{decimal} %{decimal_label}'
+      integer_label: "pesos"
+      decimal_label: 'centavos'
+    default:
+      format:
+        short: ! '%{integer}'
+        long:  !  '%{integer} con %{decimal}'
+    usd:
+      format:
+        short: ! '%{integer} %{integer_label}'
+        long: ! '%{integer} %{integer_label} con%{decimal} %{decimal_label}'
+      integer_label: "dolares"
+      decimal_label: 'centavos de dolar'
