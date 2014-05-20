@@ -1,5 +1,6 @@
 #!/bin/env ruby
 # encoding: utf-8
+require 'i18n'
 
 UNIDADES = ["", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez", "once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete", "dieciocho", "diecinueve", "veinte", "veintiun", "veintidos", "veintitres", "veinticuatro", "veinticinco", "veintiseis", "veintisiete", "veintiocho", "veintinueve"]
 DECENAS = ["", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"]
@@ -7,14 +8,17 @@ CENTENAS = ["", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinien
 MILLONES = ["mill", "bill", "trill", "cuatrill"]
 
 class Numeric
-  def to_spanish_text currency=""
+	rails_locale =  defined?(Rails)? "#{Rails.root}/config/locales/**/*.yml" : ''
+	I18n.load_path = Dir[File.join(File.dirname(__FILE__),'locales/**/*.yml'), rails_locale]
+
+  def to_spanish_text(options = {currency: :default})
     final_text = ""
     sprintf( "%.2f", self ) =~ /([^\.]*)(\..*)?/
-    int, dec = $1.reverse, $2 ? $2[1..-1] : ""
+    int, dec = $1.reverse, $2 ? $2[1..-1].reverse : ""
     int = int.scan(/.{1,6}/).reverse
     int = int.map{ |million| million.scan(/.{1,3}/).reverse}
     int.each_with_index do |sixdigit, index|
-      i = int.length - index
+	    i = int.length - index
       final_text += solve_million sixdigit
       if (i-2) >= 0
         final_text += " " + MILLONES[ i-2 ]
@@ -22,8 +26,10 @@ class Numeric
       end
     end
     final_text = " cero" if final_text.empty?
-    final_text += mxn dec if currency == 'mxn'
-    final_text[1..-1]
+    #final_text += mxn dec if currency == 'mxn'
+    #final_text[1..-1]
+    dec = dec.eql?("") ? "cero" : cents([dec])
+		translate_currency(final_text, dec, options[:currency] )
   end
 
   private
@@ -50,7 +56,7 @@ class Numeric
       text += " y" if unit != 0
       text += " " + UNIDADES[ unit ] if unit != 0
     else
-      unit = threedigit[0..1].reverse.to_i
+			unit = threedigit[0..1].reverse.to_i
       text += " " + UNIDADES[ unit ] if unit != 0
     end
     text
@@ -65,5 +71,18 @@ class Numeric
     end
     text += " " + cents[0..1].to_s + "/100"
     text += " M.N."
+  end
+
+	def cents(cnt)
+		solve_million(cnt)
+	end
+
+
+  def translate_currency(integer, decimal, currency)
+		  integer_label =  I18n.t(:integer_label, :scope => "currencies.#{currency}", :default => "")
+		  decimal_label =  I18n.t(:decimal_label, :scope => "currencies.#{currency}", :default => "")
+		  I18n.t(:format, :scope => "currencies.#{currency}", :decimal => decimal,
+		         :decimal_label => decimal_label, :integer => integer, :integer_label => integer_label)
+	  #end
   end
 end

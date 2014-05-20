@@ -10,10 +10,12 @@ Gem::Specification.new do |s|
   s.description = "Express a number in spanish text"
   s.authors     = ["Leonardo de la Cerda", 'Ruben Espinosa']
   s.email       = ['leo@kueski.com', 'rderoldan1@gmail.com']
-  s.files       = ["lib/spanish_number.rb"]
+  s.files       = ["lib/spanish_number.rb", 'lib/locales/es.yml']
   s.homepage    =
     'http://rubygems.org/gems/spanish_number'
 
   s.add_development_dependency "bundler", "~> 1.3"
   s.add_development_dependency "rake"
+
+  s.add_runtime_dependency "i18n"
 end
