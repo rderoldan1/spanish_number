@@ -11,6 +11,8 @@ class Numeric
 	rails_locale =  defined?(Rails)? "#{Rails.root}/config/locales/**/*.yml" : ''
 	I18n.load_path = Dir[File.join(File.dirname(__FILE__),'locales/**/*.yml'), rails_locale]
 
+	I18n.locale = :es unless defined?(Rails)
+
   def to_spanish_text(options = {})
 		options = {currency: :default, format: :long}.merge!(options)
     final_text = ""
